@@ -7,16 +7,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.trade.itunes_api_manohar.R
 import com.trade.itunes_api_manohar.models.ResultModel
-import com.trade.itunes_api_manohar.models.SearchResultModel
 
 class SearchAdapter: RecyclerView.Adapter<SearchAdapter.SearchViewHolder>
 {
     var context: Context?=null
     var searchResults: ArrayList<ResultModel>?=null
+    var query:String?=null
+    var offlineSession:Boolean?=null
 
     constructor(searchResults: ArrayList<ResultModel>, context: Context)
     {
@@ -27,8 +29,21 @@ class SearchAdapter: RecyclerView.Adapter<SearchAdapter.SearchViewHolder>
 
     fun updateData(searchResults: List<ResultModel>) //using for everytime user clicks on searchbutton
     {
+        this.offlineSession = false
         this.searchResults!!.clear()
         this.searchResults!!.addAll(searchResults)
+        notifyDataSetChanged()
+        Toast.makeText(context, "Querying from itunes API", Toast.LENGTH_SHORT).show()
+
+    }
+
+    fun searchOffline(searchResults: List<ResultModel>, querystring: String, offlineSessionx: Boolean)
+    {
+        this.query = querystring
+        this.offlineSession = offlineSessionx
+        this.searchResults!!.clear()
+        this.searchResults!!.addAll(searchResults)
+        Toast.makeText(context, "offline data from RoomDatabase", Toast.LENGTH_SHORT).show()
         notifyDataSetChanged()
     }
 
@@ -39,15 +54,34 @@ class SearchAdapter: RecyclerView.Adapter<SearchAdapter.SearchViewHolder>
     }
 
     override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
-        holder.bind(searchResults!![position])
+        if (!offlineSession!!)
+        {
+            holder.bind(searchResults!![position])
+        }
+        else
+        {
 
+            if (searchResults!![position].artistName.contains(query!!, ignoreCase = true) || searchResults!![position].trackName.contains(query!!, ignoreCase = true))
+            {
+
+              holder.bind(searchResults!![position])
+
+            }
+
+
+        }
+
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return position
     }
 
     override fun getItemCount(): Int {
         return searchResults!!.size
     }
 
-    class SearchViewHolder(view:View):RecyclerView.ViewHolder(view)
+    class SearchViewHolder(view: View):RecyclerView.ViewHolder(view)
     {
 
         val trackname = view.findViewById<TextView>(R.id.trackname)
@@ -57,10 +91,13 @@ class SearchAdapter: RecyclerView.Adapter<SearchAdapter.SearchViewHolder>
         fun bind(resultModel: ResultModel)
         {
 
-            trackname.text = resultModel.trackName.toString()
-            artistname.text = resultModel.artistName.toString()
-            artwork.setImage(resultModel.artworkUrl)
-            Log.i("text", resultModel.artistName.toString())
+
+                trackname.text = resultModel.trackName
+                artistname.text = resultModel.artistName
+                artwork.setImage(resultModel.artworkUrl)
+                Log.i("text", resultModel.artistName.toString())
+
+
 
         }
 

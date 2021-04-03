@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
+
 }
 
 android {
@@ -71,6 +73,12 @@ dependencies {
     implementation "com.android.support:appcompat-v7:$supportVersion"
     implementation "android.arch.lifecycle:extensions:$lifeCycleExtensionsVersion"
 
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    annotationProcessor 'android.arch.persistence.room:compiler:1.0.0'
+
+    // optional - Kotlin Extensions and Coroutines support for Room
+    implementation "androidx.room:room-ktx:$room_version"
 
 
 

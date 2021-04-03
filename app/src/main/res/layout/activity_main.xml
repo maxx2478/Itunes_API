@@ -12,7 +12,7 @@
         android:id="@+id/search_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:queryHint="Search Artist Name"
+        app:queryHint="Search Anything"
         android:layout_marginTop="7dp"
         app:iconifiedByDefault="false"
         />
