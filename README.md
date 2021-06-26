@@ -1,3 +1,3 @@
 # Itunes_API
-built in Kotlin with Navigation Components, Coroutines & Room Database.
+built in Kotlin with Coroutines & Room Database.
 
